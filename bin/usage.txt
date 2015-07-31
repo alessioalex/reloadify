@@ -1,0 +1,11 @@
+Usage: reloadify {OPTIONS}
+
+Options:
+
+      --port, -p  Port to start the server on.
+
+    --folder, -f  Folder to be watched for changes.
+
+    --silent, -s  Disable the logger.
+
+      --help, -h  Show this message.
