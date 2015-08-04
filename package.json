@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "A live-reload NPM module that works well with your raw Node / Express servers. CLI version available as well.",
   "main": "server.js",
+  "bin": "bin/cli.js",
   "scripts": {
     "test": "node test/functional.js",
     "start": "node server.js",
@@ -10,6 +11,10 @@
     "precommit": "npm run lint"
   },
   "author": "Alexandru Vladutu <alexandru.vladutu@gmail.com> (http://careers.stackoverflow.com/alessioalex)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alessioalex/reloadify.git"
+  },
   "license": "MIT",
   "keywords": [
     "live",
