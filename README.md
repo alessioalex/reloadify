@@ -9,7 +9,9 @@ Use it with your Node http / Express server without needing anything else (NO BR
 `reloadify` is installable via `npm` and can be used in 3 possible ways:
 
 1) along with your existing Node server (or Express, etc)
+
 2) standalone, as a live reloading static file server
+
 3) as a CLI app, using 2)
 
 ### integrating it with your Node server
@@ -82,6 +84,12 @@ Options:
       --help, -h  Show this message.
 ```
 
+Example:
+
+```sh
+reloadify -f myAppFolder -p 4000
+```
+
 ## how does it work
 
 Responses are intercepted in order for a script to be injected into the page using [inject-html](https://github.com/alessioalex/inject-html).
@@ -96,11 +104,11 @@ The server will send a message to the browser when watched files change, using [
 
 I read the following about getting started with [LiveReload](http://livereload.com/):
 
-    2. It works with Safari, Chrome, Firefox and Mobile Safari. Also Opera if you enable web sockets.
+    1. It works with Safari, Chrome, Firefox and Mobile Safari. Also Opera if you enable web sockets.
 
-    3. Yes, you heard that right, LiveReload <3 iPhones, iPads and their Simulators if you insert a JavaScript snippet.
+    2. Yes, you heard that right, LiveReload <3 iPhones, iPads and their Simulators if you insert a JavaScript snippet.
 
-    4. If adding a tag is not your thing, and you're only interested in desktop browsers, only on your computer, use our browser extensions.
+    3. If adding a tag is not your thing, and you're only interested in desktop browsers, only on your computer, use our browser extensions.
 
 My issues were the following: I wanted a tool that works in every browser without a plugin and without injecting a JavaScript snippet.
 Sure, `LiveReload` has a wider scope and does not specifically care about the backend.
