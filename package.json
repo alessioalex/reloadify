@@ -41,8 +41,11 @@
     "uglify-js": "~2.4.15"
   },
   "devDependencies": {
+    "body-parser": "^1.15.2",
+    "chromedriver": "^2.21.2",
     "eslint": "^0.23.0",
     "husky": "^0.8.1",
+    "post-json": "^0.3.1",
     "selenium-webdriver": "^2.46.1",
     "server-destroy": "^1.0.1",
     "tape": "^4.0.0"

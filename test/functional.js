@@ -4,12 +4,13 @@
 var fs = require('fs');
 var http = require('http');
 var reloadify = require('../');
-var PORT = process.env.PORT || 1337;
 var tmpDir = require('os').tmpDir() + '/reloadify';
 var tmpFilename = tmpDir + '/test-tmpl.txt';
 var test = require('tape');
 var webdriver = require('selenium-webdriver');
 var enableDestroy = require('server-destroy');
+var bodyParser = require('body-parser');
+var postJson = require('post-json');
 
 test('it should refresh the page on changes', function(t) {
   var rld = reloadify(tmpDir);
@@ -28,25 +29,33 @@ test('it should refresh the page on changes', function(t) {
 
   var server = http.createServer(function(req, res) {
     rld(req, res, function() {
-      if (req.url === '/') {
-        fs.readFile(tmpFilename, 'utf8', function(err, content) {
-          if (err) {
-            console.error(err.stack);
-            res.statusCode = 500;
-            res.end('Internal Server Error');
-          }
+      bodyParser.json()(req, res, function() {
+        var method = req.method.toUpperCase();
 
-          res.writeHead(200, { 'Content-Type': 'text/html' });
+        if (['GET', 'HEAD'].indexOf(method) === -1) {
+          return res.end(JSON.stringify(req.body));
+        }
 
-          var html = '<title>original</title><pre>';
-          html += content + '</pre>\n';
+        if (req.url === '/') {
+          fs.readFile(tmpFilename, 'utf8', function(err, content) {
+            if (err) {
+              console.error(err.stack);
+              res.statusCode = 500;
+              res.end('Internal Server Error');
+            }
 
-          res.end(html);
-        });
-      } else {
-        res.writeHead(404, { 'Content-Type': 'text/html' });
-        res.end('Page Not Found\n');
-      }
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+
+            var html = '<title>original</title><pre>';
+            html += content + '</pre>\n';
+
+            res.end(html);
+          });
+        } else {
+          res.writeHead(404, { 'Content-Type': 'text/html' });
+          res.end('Page Not Found\n');
+        }
+      });
     });
   });
 
@@ -62,7 +71,7 @@ test('it should refresh the page on changes', function(t) {
   driver.get('http://localhost:1337');
 
   driver.executeScript('return document.title;').then(function(title) {
-    t.equal(title, 'original');
+    t.equal(title, 'original', 'Original content should be displayed.');
   });
 
   fs.appendFileSync(tmpFilename, '<p id="new-element">new text</p>');
@@ -73,13 +82,25 @@ test('it should refresh the page on changes', function(t) {
 
     // the page should be refreshed, and the new content should appear
     return driver.executeScript(script).then(function(content) {
+      t.equal(content, 'new text', 'Content should be changed.');
+
       return (content === 'new text');
     });
   }, 5000).then(function() {
-    // close everything so Node can quit
-    driver.quit();
-    server.destroy();
-    rld.close();
-    t.end();
+    var url = 'http://localhost:1337/foobar';
+    var postData = { data: 'foobar' };
+
+    postJson(url, postData, function(err, result) {
+      if (err) { throw err; }
+
+      t.deepEqual(JSON.parse(result.body), postData,
+          'Non GET/HEAD request should work as usual.');
+
+      // close everything so Node can quit
+      driver.quit();
+      server.destroy();
+      rld.close();
+      t.end();
+    });
   });
 });
