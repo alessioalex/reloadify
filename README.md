@@ -120,7 +120,7 @@ However that wasn't my case, as I was working exclusively with Node.
 
 However I wanted something lighter that I could [easily integrate](https://github.com/BrowserSync/browser-sync/issues/154) with my existing Node / Express server.
 
-### Others
+### others
 
 As much as I love reinventing the wheel, I also took a look at some other popular alternatives (besides the two previously mentioned) before creating my own thing:
 
@@ -131,6 +131,10 @@ The first module works fine if you're only doing HTML / CSS / JS stuff, but I wa
 The second module depends on `LiveReload`, so it's a no-go for the reasons listed before.
 
 Last but not least, it was fun.
+
+## gotchas
+
+Make sure you have `<body></body>` tags for HTML pages, those are needed to inject the script that takes care of reloading the page. If you don't have those the page will be hanging.
 
 ## tests
 
